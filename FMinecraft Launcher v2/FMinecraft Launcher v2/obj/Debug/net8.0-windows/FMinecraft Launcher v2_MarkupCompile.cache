@@ -1,0 +1,20 @@
+﻿FMinecraft Launcher v2
+1.0.0.0
+
+winexe
+C#
+.cs
+C:\Users\nicky\source\repos\FMinecraft Launcher v2\FMinecraft Launcher v2\obj\Debug\net8.0-windows\
+FMinecraft_Launcher_v2
+none
+false
+TRACE;DEBUG;NET;NET8_0;NETCOREAPP
+C:\Users\nicky\source\repos\FMinecraft Launcher v2\FMinecraft Launcher v2\App.xaml
+72096871879
+11331749442
+12-474566179
+199283030736
+Pages\AboutusPage.xaml;Pages\HomePage.xaml;Pages\SettingsPage.xaml;Windows\Console Window.xaml;Windows\ErrorWindow.xaml;Windows\LoadingWindow.xaml;Windows\MainWindow.xaml;
+
+False
+

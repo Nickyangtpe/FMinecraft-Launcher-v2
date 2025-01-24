@@ -1,0 +1,208 @@
+﻿<Page   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="FMinecraft_Launcher_v2.Pages.SettingsPage"
+        Title="Settings" Height="500" Width="800"
+        Background="#FF2A2A2A">
+    <Page.Resources>
+        <!-- Style for the Navigation Buttons -->
+        <Style TargetType="{x:Type Button}" x:Key="NavigationBarButtonStyle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="0,0,20,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <TextBlock Text="{TemplateBinding Content}"
+                           Foreground="{TemplateBinding Foreground}">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="TextDecorations" Value="None"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="TextDecorations" Value="Underline"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="NavigationBarButtonStyle_First" BasedOn="{StaticResource NavigationBarButtonStyle}">
+            <Setter Property="Margin" Value="0,0,20,0"/>
+        </Style>
+        <Style TargetType="{x:Type Button}" x:Key="NavigationBarButtonStyle_Last" BasedOn="{StaticResource NavigationBarButtonStyle}">
+            <Setter Property="Margin" Value="0,0,0,0"/>
+        </Style>
+
+        <!-- Existing styles remain unchanged -->
+        <Style x:Key="DarkCheckBoxStyle" TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+        </Style>
+
+        <Style x:Key="DarkButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#FF3A3A3A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#FF555555"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+        </Style>
+
+        <Style x:Key="DarkTextBoxStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="#FF333333"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF555555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+        </Style>
+        <Style x:Key="DarkComboBoxStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="Background" Value="#FF333333"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF555555"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBox}">
+                        <Grid>
+                            <ToggleButton
+                        Name="ToggleButton"
+                        Background="{TemplateBinding Background}"
+                        Foreground="{TemplateBinding Foreground}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        FocusVisualStyle="{x:Null}"
+                        IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="20" />
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter
+                                Grid.Column="0"
+                                Content="{TemplateBinding SelectionBoxItem}"
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Margin="5,0,0,0" />
+                                    <Path
+                                Grid.Column="1"
+                                Data="M0,0 L4,4 L8,0 Z"
+                                Fill="{TemplateBinding Foreground}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                                </Grid>
+                            </ToggleButton>
+                            <Popup
+                        Name="Popup"
+                        Placement="Bottom"
+                        IsOpen="{TemplateBinding IsDropDownOpen}"
+                        AllowsTransparency="True"
+                        Focusable="False">
+                                <Border
+                            Background="#FF333333"
+                            BorderBrush="#FF555555"
+                            BorderThickness="1">
+                                    <ScrollViewer MaxHeight="200">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto" MinHeight="0"/>
+        </Grid.RowDefinitions>
+
+        <!-- Settings Content Area -->
+        <Grid Grid.Row="1" Margin="20,20,20,20">
+            <StackPanel>
+                <TextBlock Text="Settings" Foreground="White" FontSize="24" Margin="0,0,0,20"/>
+
+                <!-- Checkboxes -->
+                <CheckBox x:Name="HideLauncher" Content="Hide Launcher on startup" Style="{StaticResource DarkCheckBoxStyle}" Click="SettingsChanged"/>
+                <CheckBox x:Name="ShowConsole" Content="Show console on startup" Style="{StaticResource DarkCheckBoxStyle}" Click="SettingsChanged"/>
+                <CheckBox x:Name="CloseLauncher" Content="Close the launcher after starting" Style="{StaticResource DarkCheckBoxStyle}" Click="SettingsChanged"/>
+                <CheckBox x:Name="TopMostLauncher" Content="TopMost (Launcher)" Style="{StaticResource DarkCheckBoxStyle}" Click="SettingsChanged"/>
+
+                <!-- Checkboxes on the same line -->
+                <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
+                    <CheckBox x:Name="releases" Content="Show releases" Style="{StaticResource DarkCheckBoxStyle}" Margin="0,0,10,0" Click="SettingsChanged" Checked="versionChage"/>
+                    <CheckBox x:Name="snapshot" Content="Show snapshot" Style="{StaticResource DarkCheckBoxStyle}" Margin="0,0,10,0" Click="SettingsChanged" Checked="versionChage"/>
+                    <CheckBox x:Name="Alpha" Content="Show Alpha" Style="{StaticResource DarkCheckBoxStyle}" Margin="0,0,10,0" Click="SettingsChanged" Checked="versionChage"/>
+                </StackPanel>
+
+                <!-- TextBox for User Name -->
+                <TextBlock Text="User Name" Foreground="White" Margin="0,10,0,5"/>
+                <TextBox x:Name="UserName" Style="{StaticResource DarkTextBoxStyle}" HorizontalAlignment="Left" Width="345" TextChanged="UserName_TextChanged"/>
+
+                <!-- Buttons -->
+                <Button Content="Version folder" Style="{StaticResource DarkButtonStyle}" Click="VersioButton_Click"/>
+                <Button Content="Console" Style="{StaticResource DarkButtonStyle}" Click="ConsoleButton_Click"/>
+                <Button Content="Reinstall Launcher" Style="{StaticResource DarkButtonStyle}" Background="#FFEB4E4E"/>
+
+
+                <!-- ComboBox-->
+                <TextBlock Text="Launcher Cover" Foreground="White" Width="759"/>
+                <ComboBox x:Name="CoverComboBox"
+                          Style="{StaticResource DarkComboBoxStyle}"
+                          Width="486" Height="29"
+                          SelectedIndex="11"
+                          HorizontalAlignment="Left" SelectionChanged="CoverComboBox_SelectionChanged">
+                    <ComboBoxItem>1.08_cats_and_pandas.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.09_combat_update_java.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.0_pocket_edition.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.11_exploration_update_java.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.12_world_of_color_update_java.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.13_technically_updated_java.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.13_update_aquatic.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.14_village_pillage_update.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.15_buzzy_bees_update.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.16_nether_update.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.17_caves_and_cliffs_part_1.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.17_caves_and_cliffs_part_2.jpg</ComboBoxItem>
+                    <ComboBoxItem>1.19_the_wild_update.jpg</ComboBoxItem>
+                    <ComboBoxItem>bedrock_and_java_together.jpg</ComboBoxItem>
+                    <ComboBoxItem>bedrock_and_java_together_technoblade.jpg</ComboBoxItem>
+                    <ComboBoxItem>bedrock_master.jpg</ComboBoxItem>
+                    <ComboBoxItem>bedrock_standard.jpg</ComboBoxItem>
+                    <ComboBoxItem>original_image.jpg</ComboBoxItem>
+                    <ComboBoxItem>other_dungeons.jpg</ComboBoxItem>
+                    <ComboBoxItem>other_early_console_era.jpg</ComboBoxItem>
+                    <ComboBoxItem>other_indie_days.jpg</ComboBoxItem>
+                    <ComboBoxItem>other_late_legacy_console.jpg</ComboBoxItem>
+                    <ComboBoxItem>other_mid_legacy_console.jpg</ComboBoxItem>
+                </ComboBox>
+
+                <!-- Save Settings Button -->
+            </StackPanel>
+        </Grid>
+        <Border Grid.Row="0" Background="#FF1E1E1E" Margin="0,0,-108,4">
+            <StackPanel Orientation="Horizontal" Margin="20,10">
+                <Button Content="Play" Foreground="Gray" Style="{StaticResource NavigationBarButtonStyle_First}" Click="PlayButton_Click"/>
+                <Button Content="Settings" Style="{StaticResource NavigationBarButtonStyle}"/>
+                <Button Content="About us" Foreground="Gray" Style="{StaticResource NavigationBarButtonStyle}" Click="AboutUsButton_Click"/>
+                <Button Content="GitHub" Foreground="Gray" Style="{StaticResource NavigationBarButtonStyle_Last}" Click="GithubButton_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>
+
