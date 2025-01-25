@@ -212,7 +212,7 @@
                 <!-- Progress Bar Row -->
             </Grid.RowDefinitions>
 
-            <Image x:Name="Cover" Grid.Row="0" Stretch="UniformToFill" Margin="20,20,20,79" Grid.RowSpan="2" Source="/Pages/1.17_caves_and_cliffs_part_1.jpg"/>
+            <Image x:Name="Cover" Grid.Row="0" Margin="20,20,20,79" Grid.RowSpan="2" Source="/Pages/1.17_caves_and_cliffs_part_1.jpg" Stretch="Fill"/>
 
             <!-- Version Selection and Launch Button -->
             <Grid Grid.Row="1" Margin="20">

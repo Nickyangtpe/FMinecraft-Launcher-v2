@@ -196,11 +196,6 @@ namespace FMinecraft_Launcher_v2
             loadingWindow.Show();
             #endregion
 
-            #region Launcher Profiles Setup
-            string launcherProfilesPath = Path.Combine(".minecraft", "launcher_profiles.json");
-            if (!File.Exists(launcherProfilesPath)) File.WriteAllText(launcherProfilesPath, $@"{{""clientToken"": ""{Guid.NewGuid().ToString("N")}"",""profiles"": {{}}}}");
-            #endregion
-
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Starting asynchronous launcher initialization.");
 
             #region Directory Initialization
@@ -208,6 +203,11 @@ namespace FMinecraft_Launcher_v2
             EnsureDirectoryExists(".launcher"); // Ensure the .launcher directory exists.
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, "Ensuring '.minecraft' directory exists for Minecraft game files.");
             EnsureDirectoryExists(".minecraft"); // Ensure the .minecraft directory exists.
+            #endregion
+
+            #region Launcher Profiles Setup
+            string launcherProfilesPath = Path.Combine(".minecraft", "launcher_profiles.json");
+            if (!File.Exists(launcherProfilesPath)) File.WriteAllText(launcherProfilesPath, $@"{{""clientToken"": ""{Guid.NewGuid().ToString("N")}"",""profiles"": {{}}}}");
             #endregion
 
             #region Page Instance Creation
@@ -231,13 +231,13 @@ namespace FMinecraft_Launcher_v2
             await LoadVersionManifestAsync(); // Load Minecraft version manifest from Mojang.
             #endregion
 
-            Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Launcher initialization completed successfully.");
-
             #region Launcher Cover Loading
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, "Loading launcher covers from disk.");
             await LoadLauncherCover();
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Launcher covers loaded.");
             #endregion
+
+            Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Launcher initialization completed successfully.");
 
             #region Loading Window Completion and Main Window Display
             // Indicate to the loading window that initialization is finished (if needed for animation or finalization).
@@ -325,7 +325,6 @@ namespace FMinecraft_Launcher_v2
             {
                 Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Warning, "Settings file not found.");
                 CreateDefaultSettingsFile(settingsFilePath); // Create a default settings file if it doesn't exist.
-                return; // Exit the method after creating default settings.
             }
 
             await ReadSettingsFile(settingsFilePath); // Read settings from the existing file.
@@ -400,7 +399,7 @@ namespace FMinecraft_Launcher_v2
         /// Updates the checkboxes and textboxes in the settings page based on the loaded settings.
         /// </summary>
         /// <param name="settings">The loaded settings object to apply.</param>
-        private void ApplySettingsToUI(Settings settings)
+        public void ApplySettingsToUI(Settings settings)
         {
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Applying loaded settings to the UI.");
             // Update UI elements on the settings page with loaded settings.
@@ -412,6 +411,7 @@ namespace FMinecraft_Launcher_v2
             settingsPage.Alpha.IsChecked = settings.ShowAlpha;
             settingsPage.TopMostLauncher.IsChecked = settings.TopMost;
             settingsPage.UserName.Text = settings.UserName;
+            Topmost = settingsPage.TopMostLauncher.IsChecked.Value;
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Launcher settings applied to the settings page.");
         }
 
@@ -435,6 +435,7 @@ namespace FMinecraft_Launcher_v2
                 // Write the JSON settings to the settings file asynchronously.
                 await File.WriteAllTextAsync(settingsFilePath, settingsJson, Encoding.UTF8);
                 Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Launcher settings saved successfully.");
+                ApplySettingsToUI(settings);
             }
             catch (Exception ex)
             {
@@ -556,6 +557,7 @@ namespace FMinecraft_Launcher_v2
             errorWindow.ShowDialog(); // Show the error window as a modal dialog, blocking interaction with the main window until closed.
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, "Error window closed.");
             Show(); // Ensure the main window is visible, in case it was hidden.
+            if (homePage == null) return;
             homePage.LaunchButton.IsEnabled = true; // Re-enable the launch button.
             homePage.VerisonComboBox.IsEnabled = true; // Re-enable the version combobox.
         }
@@ -886,6 +888,8 @@ namespace FMinecraft_Launcher_v2
                 Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, library);
             }
 
+            progressBar.Maximum = 1;progressBar.Value = 1;
+
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, "Generating classpath for Minecraft launch based on downloaded libraries and JARs.");
             string classpath = await Task.Run(() => GenerateClasspath(selectedVersion, versionJson)); // Generate classpath string.
 
@@ -1189,6 +1193,13 @@ namespace FMinecraft_Launcher_v2
             }
 
             string? component = javaVersion["component"]?.ToString(); // Get Java component.
+
+            //Fix the crash problem of Java on Minecraft 1.14~1.18
+            Version MinecraftVersion = new Version(versionJson?["id"]?.ToString());
+            Version lowerBound = new Version("1.14.0");
+            Version upperBound = new Version("1.19.0");
+            if (MinecraftVersion >= lowerBound && MinecraftVersion < upperBound) component = "java-runtime-beta";
+
             string? majorVersion = javaVersion["majorVersion"]?.ToString(); // Get Java major version.
 
             if (string.IsNullOrEmpty(component) || string.IsNullOrEmpty(majorVersion))
@@ -1275,7 +1286,7 @@ namespace FMinecraft_Launcher_v2
         /// <param name="description">A description of the file being downloaded for logging.</param>
         /// <param name="expectedSize">The expected size of the file (optional), used for file integrity check.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        private async Task DownloadFileAsync(string url, string filePath, ProgressBar progress, string description, long? expectedSize = null)
+        private async Task DownloadFileAsync(string url, string filePath, ProgressBar? progress = null, string? description = null, long? expectedSize = null)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(filePath)!); // Ensure directory for file exists.
             // Skip download if file exists and size matches expected size (if provided).
@@ -1285,7 +1296,7 @@ namespace FMinecraft_Launcher_v2
                 return; // Skip download if file already exists and size is correct.
             }
 
-            Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, $"Downloading {description} from '{url}' to '{filePath}'.");
+            Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, $"Downloading {description ?? Path.GetFileName(filePath)} from '{url}' to '{filePath}'.");
 
             try
             {
@@ -1297,7 +1308,7 @@ namespace FMinecraft_Launcher_v2
                 // Check for file size mismatch if expected size is provided.
                 if (expectedSize.HasValue && totalBytes != expectedSize)
                 {
-                    Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Warning, $"File size mismatch for {description}. Expected: {expectedSize}, Got: {totalBytes}.");
+                    Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Warning, $"File size mismatch for {description ?? Path.GetFileName(filePath)}. Expected: {expectedSize}, Got: {totalBytes}.");
                 }
 
                 using var contentStream = await response.Content.ReadAsStreamAsync(); // Get download content stream.

@@ -97,6 +97,7 @@ namespace FMinecraft_Launcher_v2.Pages
                 string SettingsJson = JsonConvert.SerializeObject(settings, Formatting.Indented);
                 Directory.CreateDirectory(Path.GetDirectoryName(SettingsFilePath)!);
                 await File.WriteAllTextAsync(SettingsFilePath, SettingsJson, Encoding.UTF8);
+                _mainWindow.ApplySettingsToUI(settings);
                 _mainWindow.Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, $"Settings saved to '{SettingsFilePath}'.");
             }
         }

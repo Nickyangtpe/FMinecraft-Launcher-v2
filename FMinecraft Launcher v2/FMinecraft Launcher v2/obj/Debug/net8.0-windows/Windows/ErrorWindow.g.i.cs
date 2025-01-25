@@ -60,7 +60,7 @@ namespace FMinecraft_Launcher_v2.Windows {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/FMinecraft Launcher v2;V1.0.0.0;component/windows/errorwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/FMinecraft Launcher v2;V1.0.0.1;component/windows/errorwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Windows\ErrorWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
