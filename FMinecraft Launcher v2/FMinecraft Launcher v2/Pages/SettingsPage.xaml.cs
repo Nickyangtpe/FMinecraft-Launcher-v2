@@ -15,6 +15,10 @@ namespace FMinecraft_Launcher_v2.Pages
     /// </summary>
     public partial class SettingsPage : Page
     {
+        // Define a new base path to the FMinecraft Launcher folder in AppData Roaming
+        private static readonly string BasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".FMinecraftLauncher");
+
+
         #region Fields
         private MainWindow _mainWindow;
         #endregion
@@ -93,7 +97,7 @@ namespace FMinecraft_Launcher_v2.Pages
                     AccessToken = "none",
                     UserName = UserName.Text,
                 };
-                string SettingsFilePath = Path.Combine(".launcher", "settings.json");
+                string SettingsFilePath = Path.Combine(BasePath, ".launcher", "settings.json");
                 string SettingsJson = JsonConvert.SerializeObject(settings, Formatting.Indented);
                 Directory.CreateDirectory(Path.GetDirectoryName(SettingsFilePath)!);
                 await File.WriteAllTextAsync(SettingsFilePath, SettingsJson, Encoding.UTF8);
@@ -113,7 +117,7 @@ namespace FMinecraft_Launcher_v2.Pages
 
         private void VersioButton_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("explorer", Path.GetFullPath(Path.Combine(".minecraft", "versions")));
+            Process.Start("explorer", Path.GetFullPath(Path.Combine(BasePath, ".minecraft", "versions")));
         }
         #endregion
 

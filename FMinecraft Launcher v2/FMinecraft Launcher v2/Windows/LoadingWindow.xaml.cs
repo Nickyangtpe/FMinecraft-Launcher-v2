@@ -19,10 +19,13 @@ using Path = System.IO.Path;
 namespace FMinecraft_Launcher_v2.Windows
 {
     /// <summary>
-    /// LoadingWindow.xaml 的互動邏輯
+    /// Interaction logic for LoadingWindow.xaml
     /// </summary>
     public partial class LoadingWindow : Window
     {
+        // Define a new base path to the FMinecraft Launcher folder in AppData Roaming
+        private static readonly string BasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".FMinecraftLauncher");
+
         public LoadingWindow(MainWindow _mainWindow)
         {
             InitializeComponent();
@@ -32,7 +35,7 @@ namespace FMinecraft_Launcher_v2.Windows
 
         private async void Initialize(MainWindow _mainWindow)
         {
-            var CoverDirectory = Path.Combine(".launcher", "Covers");
+            var CoverDirectory = Path.Combine(BasePath, ".launcher", "Covers");
             if (!Directory.Exists(CoverDirectory))
             {
                 var tempZipPath = Path.Combine(Path.GetTempPath(), "BannerArea.zip");
@@ -66,7 +69,7 @@ namespace FMinecraft_Launcher_v2.Windows
                 }
             });
 
-             _mainWindow.Show();
+            _mainWindow.Show();
             Close();
         }
 

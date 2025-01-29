@@ -23,6 +23,9 @@ namespace FMinecraft_Launcher_v2
 {
     public partial class MainWindow : Window
     {
+        // Define a new base path to the FMinecraft Launcher folder in AppData Roaming
+        private static readonly string BasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ".FMinecraftLauncher");
+
         #region Launcher Console Management
 
         #region Launcher Console Enums
@@ -200,13 +203,13 @@ namespace FMinecraft_Launcher_v2
 
             #region Directory Initialization
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, "Ensuring '.launcher' directory exists for launcher-specific files.");
-            EnsureDirectoryExists(".launcher"); // Ensure the .launcher directory exists.
+            EnsureDirectoryExists(Path.Combine(BasePath, ".launcher")); // Ensure the .launcher directory exists.
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, "Ensuring '.minecraft' directory exists for Minecraft game files.");
-            EnsureDirectoryExists(".minecraft"); // Ensure the .minecraft directory exists.
+            EnsureDirectoryExists(Path.Combine(BasePath, ".minecraft")); // Ensure the .minecraft directory exists.
             #endregion
 
             #region Launcher Profiles Setup
-            string launcherProfilesPath = Path.Combine(".minecraft", "launcher_profiles.json");
+            string launcherProfilesPath = Path.Combine(BasePath, ".minecraft", "launcher_profiles.json");
             if (!File.Exists(launcherProfilesPath)) File.WriteAllText(launcherProfilesPath, $@"{{""clientToken"": ""{Guid.NewGuid().ToString("N")}"",""profiles"": {{}}}}");
             #endregion
 
@@ -252,7 +255,7 @@ namespace FMinecraft_Launcher_v2
         public async Task LoadLauncherCover()
         {
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Loading launcher covers.");
-            string coversDirectory = Path.Combine(".launcher", "Covers");
+            //string coversDirectory = Path.Combine(BasePath, ".launcher", "Covers");
             //Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Checking for covers in directory: '{coversDirectory}'.");
 
             //settingsPage.CoverComboBox.Items.Clear();
@@ -317,7 +320,7 @@ namespace FMinecraft_Launcher_v2
         {
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Loading launcher settings.");
 
-            string settingsFilePath = Path.Combine(".launcher", "settings.json");
+            string settingsFilePath = Path.Combine(BasePath, ".launcher", "settings.json");
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Settings file path: '{settingsFilePath}'.");
 
             // Check if the settings file exists.
@@ -425,7 +428,7 @@ namespace FMinecraft_Launcher_v2
         {
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Saving launcher settings.");
 
-            string settingsFilePath = Path.Combine(".launcher", "settings.json");
+            string settingsFilePath = Path.Combine(BasePath, ".launcher", "settings.json");
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Saving settings to '{settingsFilePath}'.");
 
             try
@@ -589,7 +592,7 @@ namespace FMinecraft_Launcher_v2
             }
 
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, "Saving launcher log to file.");
-            string logFilePath = Path.Combine(".launcher", "Log", $"Log-{DateTime.Now:yyyy-MM-dd HH-mm-ss}.txt"); // Define log file path with timestamp.
+            string logFilePath = Path.Combine(BasePath, ".launcher", "Log", $"Log-{DateTime.Now:yyyy-MM-dd HH-mm-ss}.txt"); // Define log file path with timestamp.
             Directory.CreateDirectory(Path.GetDirectoryName(logFilePath)!); // Ensure the log directory exists.
             File.WriteAllText(logFilePath, _log.ToString()); // Write the accumulated log to the file.
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, $"Launcher log saved to '{logFilePath}'.");
@@ -735,7 +738,7 @@ namespace FMinecraft_Launcher_v2
         private void SaveVersionManifestToDisk(JObject manifest)
         {
             const string versionsDirName = "versions";
-            string versionsConfigFolderPath = Path.Combine(".minecraft", versionsDirName); // Define path for versions config directory.
+            string versionsConfigFolderPath = Path.Combine(BasePath, ".minecraft", versionsDirName); // Define path for versions config directory.
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Ensuring versions config directory exists at '{versionsConfigFolderPath}'.");
             Directory.CreateDirectory(versionsConfigFolderPath); // Ensure versions config directory exists.
 
@@ -812,7 +815,7 @@ namespace FMinecraft_Launcher_v2
         /// <param name="versionJson">The version information in JSON format.</param>
         private void SaveVersionInfoToDisk(string versionId, string versionJson)
         {
-            string versionConfigFolderPath = Path.Combine(".minecraft", "versions", versionId); // Define path for version-specific config directory.
+            string versionConfigFolderPath = Path.Combine(BasePath, ".minecraft", "versions", versionId); // Define path for version-specific config directory.
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Ensuring version config directory exists at '{versionConfigFolderPath}'.");
             Directory.CreateDirectory(versionConfigFolderPath); // Ensure version config directory exists.
             string versionInfoPath = Path.Combine(versionConfigFolderPath, $"{versionId}.json"); // Define path for version info file.
@@ -863,7 +866,7 @@ namespace FMinecraft_Launcher_v2
 
             string mainClass = versionJson["mainClass"]!.ToString(); // Get main class for Minecraft launch.
             string minecraftVersion = versionJson["id"]!.ToString(); // Get Minecraft version ID.
-            string versionFolderPath = Path.Combine(".minecraft", "versions", minecraftVersion); // Define version-specific folder path.
+            string versionFolderPath = Path.Combine(BasePath, ".minecraft", "versions", minecraftVersion); // Define version-specific folder path.
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Ensuring version folder exists at '{versionFolderPath}'.");
             Directory.CreateDirectory(versionFolderPath); // Ensure version folder exists.
 
@@ -882,13 +885,13 @@ namespace FMinecraft_Launcher_v2
             await DownloadLibrariesAsync(versionJson, progressBar, classifiers); // Download required libraries.
             foreach (var library in classifiers)
             {
-                var DLLPath = Path.Combine(".minecraft", "versions", selectedVersion, "natives");
+                var DLLPath = Path.Combine(BasePath, ".minecraft", "versions", selectedVersion, "natives");
                 Directory.CreateDirectory(DLLPath);
                 await Task.Run(() => ZipFile.ExtractToDirectory(library, DLLPath, true));
                 Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, library);
             }
 
-            progressBar.Maximum = 1;progressBar.Value = 1;
+            progressBar.Maximum = 1; progressBar.Value = 1;
 
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, "Generating classpath for Minecraft launch based on downloaded libraries and JARs.");
             string classpath = await Task.Run(() => GenerateClasspath(selectedVersion, versionJson)); // Generate classpath string.
@@ -911,8 +914,8 @@ namespace FMinecraft_Launcher_v2
             }
 
             // Construct Minecraft launch arguments.
-            string libraryPath = Path.GetFullPath(Path.Combine(".minecraft", "libraries"));
-            string arguments = $"-Djava.library.path=\"{Path.Combine(".minecraft", "versions", selectedVersion, "natives")}\" -cp \"{classpath}\" {mainClass} --accessToken none --version {minecraftVersion} --username \"{settingsPage.UserName.Text}\" --assetsDir {Path.Combine(".minecraft", "assets")} --assetIndex {assetsIndex} --gameDir \"{Path.GetFullPath(".minecraft")}\"";
+            string libraryPath = Path.GetFullPath(Path.Combine(BasePath, ".minecraft", "libraries"));
+            string arguments = $"-Djava.library.path=\"{Path.Combine(BasePath, ".minecraft", "versions", selectedVersion, "natives")}\" -cp \"{classpath}\" {mainClass} --accessToken none --version {minecraftVersion} --username \"{settingsPage.UserName.Text}\" --assetsDir {Path.Combine(BasePath, ".minecraft", "assets")} --assetIndex {assetsIndex} --gameDir \"{Path.GetFullPath(Path.Combine(BasePath, ".minecraft"))}\"";
 
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Java Path for launching Minecraft: {Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Java", versionJson["javaVersion"]?["majorVersion"]?.ToString(), "bin", "java.exe")}");
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Minecraft Launch Arguments: {arguments}");
@@ -926,7 +929,7 @@ namespace FMinecraft_Launcher_v2
                     {
                         StartInfo = new ProcessStartInfo
                         {
-                            FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Java", versionJson["javaVersion"]?["majorVersion"]?.ToString(), "bin", "javaw.exe"), // Java executable path.
+                            FileName = Path.Combine(BasePath, "Java", versionJson["javaVersion"]?["majorVersion"]?.ToString(), "bin", "javaw.exe"), // Java executable path.
                             Arguments = arguments, // Minecraft launch arguments.
                             UseShellExecute = false,
                             RedirectStandardOutput = true, // Redirect standard output for console logging.
@@ -993,7 +996,7 @@ namespace FMinecraft_Launcher_v2
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Generating classpath for version '{version}'.");
             var classpath = new List<string>
             {
-                Path.Combine(".minecraft", "versions", version, $"{version}.jar") // Add version JAR to classpath.
+                Path.Combine(BasePath, ".minecraft", "versions", version, $"{version}.jar") // Add version JAR to classpath.
             };
 
             var libraries = versionJson["libraries"]; // Get libraries from version JSON.
@@ -1001,7 +1004,7 @@ namespace FMinecraft_Launcher_v2
             foreach (var lib in libraries)
             {
                 if (lib["downloads"]?["artifact"]?["path"] == null) continue; // Skip if artifact path is missing.
-                string libPath = Path.Combine(".minecraft", "libraries", lib["downloads"]?["artifact"]?["path"]?.ToString()); // Define library path.
+                string libPath = Path.Combine(BasePath, ".minecraft", "libraries", lib["downloads"]?["artifact"]?["path"]?.ToString()); // Define library path.
                 if (File.Exists(libPath))
                 {
                     classpath.Add(libPath); // Add library path to classpath if file exists.
@@ -1059,7 +1062,7 @@ namespace FMinecraft_Launcher_v2
                 if (!string.IsNullOrEmpty(libUrl))
                 {
                     string? libName = lib["name"]?.ToString(); // Get library name for logging.
-                    string libPath = Path.Combine(".minecraft", "libraries", artifact?["path"]?.ToString() ?? ""); // Define library file path.
+                    string libPath = Path.Combine(BasePath, ".minecraft", "libraries", artifact?["path"]?.ToString() ?? ""); // Define library file path.
                     long libSize = (long?)artifact?["size"] ?? 0; // Get library file size.
 
                     Directory.CreateDirectory(Path.GetDirectoryName(libPath)!); // Ensure library directory exists.
@@ -1081,7 +1084,7 @@ namespace FMinecraft_Launcher_v2
                 var classifiers = lib["downloads"]?["classifiers"]?["natives-windows"];
                 if (classifiers != null)
                 {
-                    var classifiersPath = Path.Combine(".minecraft", "libraries", classifiers?["path"]?.ToString());
+                    var classifiersPath = Path.Combine(BasePath, ".minecraft", "libraries", classifiers?["path"]?.ToString());
                     var classifiersSize = classifiers?["size"] ?? 0;
                     await DownloadFileAsync(classifiers?["url"]?.ToString(), classifiersPath, progressBar, Path.GetFileName(classifiersPath), (long)classifiersSize);
                     downloadedSize += (long)classifiersSize;
@@ -1126,7 +1129,7 @@ namespace FMinecraft_Launcher_v2
         private async Task DownloadAssetsAsync(string assetsUrl, string assetsIndex, ProgressBar progressBar)
         {
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, $"Downloading assets index '{assetsIndex}'.");
-            string assetsIndexPath = Path.Combine(".minecraft", "assets", "indexes", $"{assetsIndex}.json"); // Define assets index file path.
+            string assetsIndexPath = Path.Combine(BasePath, ".minecraft", "assets", "indexes", $"{assetsIndex}.json"); // Define assets index file path.
             await DownloadFileAsync(assetsUrl, assetsIndexPath, progressBar, $"{assetsIndex}.json"); // Download assets index file.
 
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, $"Loading assets index from '{assetsIndexPath}'.");
@@ -1157,7 +1160,7 @@ namespace FMinecraft_Launcher_v2
                 string hash = obj.Value["hash"]!.ToString(); // Asset hash.
                 long size = obj.Value["size"]!.Value<long>(); // Asset size.
                 string url = $"https://resources.download.minecraft.net/{hash.Substring(0, 2)}/{hash}"; // Construct asset download URL.
-                string assetPath = Path.Combine(".minecraft", "assets", "objects", hash.Substring(0, 2), hash); // Define asset file path.
+                string assetPath = Path.Combine(BasePath, ".minecraft", "assets", "objects", hash.Substring(0, 2), hash); // Define asset file path.
 
                 await DownloadFileAsync(url, assetPath, progressBar, name, size); // Download asset file.
                 downloadedSize += size; // Update downloaded size.
@@ -1208,9 +1211,9 @@ namespace FMinecraft_Launcher_v2
                 return; // Exit if component or major version is missing.
             }
 
-            string javaFolderPath = Path.Combine(Path.GetFullPath("Java"), majorVersion); // Define Java installation folder path.
+            string javaFolderPath = Path.Combine(BasePath, "Java", majorVersion); // Define Java installation folder path.
             Directory.CreateDirectory(javaFolderPath); // Ensure Java folder exists.
-            string manifestPath = Path.Combine(Path.GetFullPath("Java"), "jre_manifest.json"); // Define path to JRE manifest file.
+            string manifestPath = Path.Combine(BasePath, "Java", "jre_manifest.json"); // Define path to JRE manifest file.
 
             EnsureJavaManifestExists(manifestPath); // Ensure JRE manifest file exists.
 
