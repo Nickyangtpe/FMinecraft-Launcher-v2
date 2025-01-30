@@ -1,0 +1,22 @@
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft Launcher v2 Installer.csproj.AssemblyReference.cache
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\MainWindow.g.cs
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\App.g.cs
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft Launcher v2 Installer_MarkupCompile.cache
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft Launcher v2 Installer_MarkupCompile.lref
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\bin\Debug\FMinecraft Launcher v2 Installer.exe.config
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\bin\Debug\FMinecraft Launcher v2 Installer.exe
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\bin\Debug\FMinecraft Launcher v2 Installer.pdb
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\MainWindow.baml
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft Launcher v2 Installer.g.resources
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft_Launcher_v2_Installer.Properties.Resources.resources
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft Launcher v2 Installer.csproj.GenerateResource.cache
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft Launcher v2 Installer.csproj.CoreCompileInputs.cache
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft Launcher v2 Installer.exe
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft Launcher v2 Installer.pdb
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\Pages\Finish.g.cs
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\Pages\Installing.g.cs
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\Pages\LicenseAgreement.g.cs
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\Pages\Finish.baml
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\Pages\Installing.baml
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\Pages\LicenseAgreement.baml
+C:\Users\nicky\source\repos\FMinecraft Launcher v2 Installer\FMinecraft Launcher v2 Installer\obj\Debug\FMinecraft Launcher v2 Installer_Content.g.cs
