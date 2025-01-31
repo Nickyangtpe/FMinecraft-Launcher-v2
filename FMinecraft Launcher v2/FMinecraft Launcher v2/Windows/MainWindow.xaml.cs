@@ -149,7 +149,7 @@ namespace FMinecraft_Launcher_v2
                     ni.NetworkInterfaceType == NetworkInterfaceType.Loopback &&
                     ni.NetworkInterfaceType == NetworkInterfaceType.Tunnel)
                 {
-                    ShowError("Please connect to the Internet first.");
+                    ShowError("Please connect to the Internet first.", true);
                     Close();
                 }
             }
@@ -161,7 +161,7 @@ namespace FMinecraft_Launcher_v2
             if (CheckProcessesForCurrentExecutable(this))
             {
                 Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Error, "Another instance of the launcher is already running. Terminating current instance.");
-                ShowError("There are already other FMinecraft Launcher (v2) processes running and this process cannot be started.");
+                ShowError("There are already other FMinecraft Launcher (v2) processes running and this process cannot be started.", true);
                 Close(); // Terminate the current instance if another one is running.
                 return; // Exit constructor to prevent further initialization.
             }
@@ -553,12 +553,13 @@ namespace FMinecraft_Launcher_v2
         /// Logs the error message to the launcher console and enables UI elements after the error window is closed.
         /// </summary>
         /// <param name="errorText">The error message to display in the error window.</param>
-        public void ShowError(string errorText)
+        public void ShowError(string errorText, bool isWarn = false)
         {
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Error, $"Showing error message: {errorText}");
             var errorWindow = new ErrorWindow(errorText); // Create a new ErrorWindow instance.
             errorWindow.ShowDialog(); // Show the error window as a modal dialog, blocking interaction with the main window until closed.
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Debug, "Error window closed.");
+            if (isWarn) return;
             Show(); // Ensure the main window is visible, in case it was hidden.
             if (homePage == null) return;
             homePage.LaunchButton.IsEnabled = true; // Re-enable the launch button.
@@ -579,7 +580,7 @@ namespace FMinecraft_Launcher_v2
         /// <param name="e">The <see cref="System.ComponentModel.CancelEventArgs"/> instance containing the event data.</param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (IsRunning && !settingsPage.CloseLauncher.IsChecked.Value) { e.Cancel = true; ShowError("Unable to close launcher while downloading or running."); }
+            if (IsRunning && !settingsPage.CloseLauncher.IsChecked.Value) { e.Cancel = true; ShowError("Unable to close launcher while downloading or running.", true); }
 
             Launcher_Console(ConsoleType.Launcher, ConsoleMessageType.Info, "Window closing initiated.");
             Closed = true; // Set the Closed flag to indicate the window is closing.
@@ -1198,10 +1199,10 @@ namespace FMinecraft_Launcher_v2
             string? component = javaVersion["component"]?.ToString(); // Get Java component.
 
             //Fix the crash problem of Java on Minecraft 1.14~1.18
-            Version MinecraftVersion = new Version(versionJson?["id"]?.ToString());
-            Version lowerBound = new Version("1.14.0");
-            Version upperBound = new Version("1.19.0");
-            if (MinecraftVersion >= lowerBound && MinecraftVersion < upperBound) component = "java-runtime-beta";
+            //Version MinecraftVersion = new Version(versionJson?["id"]?.ToString());
+            //Version lowerBound = new Version("1.14.0");
+            //Version upperBound = new Version("1.19.0");
+            //if (MinecraftVersion >= lowerBound && MinecraftVersion < upperBound) component = "java-runtime-beta";
 
             string? majorVersion = javaVersion["majorVersion"]?.ToString(); // Get Java major version.
 
